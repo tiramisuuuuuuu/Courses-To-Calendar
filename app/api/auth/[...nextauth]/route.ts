@@ -9,7 +9,10 @@ const authConfig = {
             clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
             authorization: {
                 params: {
-                    scopes: "https://www.googleapis.com/auth/calendar"
+                    scopes: "https://www.googleapis.com/auth/calendar",
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
                     }
                 }           
             }),
