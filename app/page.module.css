@@ -1,0 +1,19 @@
+.bttn {
+    width: 20%;
+    height: 60px;
+    border-radius: 5px;
+    margin: 50px;
+    color: gray;
+    border: 2px, solid, rgb(48, 47, 47);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clickable {
+    background-color: aqua;
+}
+
+.disabled {
+    background-color: thistle;
+}
