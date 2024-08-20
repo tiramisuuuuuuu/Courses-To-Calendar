@@ -1,14 +1,13 @@
 'use client';
 
 import { CiSearch } from "react-icons/ci";
-import { scrape_searchInput } from "@/app/lib/search";
+import { search } from "@/app/lib/search";
 
 export default function Page() {
-    function input_handler(e) {
+    async function input_handler(e) {
         if (e.key=='Enter') {
             console.log(e.currentTarget.value);
-            scrape_searchInput(e.currentTarget.value); 
-            console.log("finished search heehaw");       
+            let results = await search(e.currentTarget.value);
             }
     }
 
