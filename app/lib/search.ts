@@ -10,7 +10,7 @@ export async function search(search: string) {
   const results = await scrape_searchInput(search);
   if (results === undefined || results.length == 0) {
     console.log("No results yall")
-    return null;
+    return _results_data;
     }
   
   const num_results = results.length;
