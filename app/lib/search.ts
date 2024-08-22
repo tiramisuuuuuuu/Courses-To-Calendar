@@ -85,7 +85,7 @@ function remove_tags(text: string) {
 
 function push_result(results_list, data, crn_list) {
   let crn = data[0];
-  if (crn in crn_list) {
+  if (crn_list.includes(crn)) {
     let index = crn_list.indexOf(crn);
     let result = results_list[index];
     let timing_add = data[1];
