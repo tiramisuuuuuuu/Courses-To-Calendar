@@ -14,6 +14,7 @@ export default function Page() {
     signIn('google', {callbackUrl: "/dashboard"});
     disable_signIn_bttn(false);
     }
+  
 
   return (
     <main className="flex flex-col items-center">

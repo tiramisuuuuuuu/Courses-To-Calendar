@@ -7,14 +7,18 @@ import { useState } from "react";
 import { AddedCoursesContext, SavedCoursesContext } from "@/app/lib/Contexts";
 
 
-
 export default function Page() {
     const [added_courses, setAddedCourses] = useState([]);
     const [saved_courses, setSavedCourses] = useState([]);
 
+    async function click_connect() {
+        console.log("yuh");
+      }
+
     return (
         <main className="flex flex-col items-center">
             <p className="w-5/6 mt-5 mb-24">Dashboard</p>
+            <button onClick={()=> {click_connect()}}>calendar connect</button>
             <AddedCoursesContext.Provider value={{ added_courses, setAddedCourses }}>
                 <SavedCoursesContext.Provider value={{ saved_courses, setSavedCourses }}>
                     <SearchPage />
