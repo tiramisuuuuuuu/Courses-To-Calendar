@@ -6,6 +6,8 @@ import { google } from "googleapis";
 
 
 export async function add_to_calendar(courseObj: object) {
+  extract_eventDetails(courseObj);
+
   const session = await getServerSession(authConfig);
   if (!session) {
     console.log("erm what");
@@ -46,29 +48,51 @@ export async function add_to_calendar(courseObj: object) {
     calendar_id = createdCalendar.data.id;
   }
   
-  extract_eventDetails(courseObj);
+  const eventsList_obj = await calendar.events.list({
+    'calendarId': calendar_id,
+    'showDeleted': true,
+  });
+  let event_ids = [];
+  for (let k=0; k<eventsList_obj.data.items.length; k++) {
+    let event = eventsList_obj.data.items[k];
+    console.log(event.id);
+    event_ids.push(event.id)
+  }
   for (let i=0; i<courseObj.eventDetails.length; i++) {
-    let event = courseObj.eventDetails[i]
-    calendar.events.insert({
-      'calendarId': calendar_id,
-      'resource': {
-        'summary': courseObj.course.concat(" ", courseObj.title),
-        'description': courseObj.location[i],
-        'start': {
-          'dateTime': event[0],
-          'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-          'dateTime': event[1],
-          'timeZone': 'America/Los_Angeles',
-        },
-        'recurrence': [
-          ('RRULE:FREQ=WEEKLY;UNTIL=').concat(event[2], ";BYDAY=", event[3])
-        ],
-        }
-      });
+    let event_details = courseObj.eventDetails[i]
+    let resource = {
+      'id' : event_details[0],
+      'summary': courseObj.course.concat(" ", courseObj.title),
+      'description': courseObj.location[i],
+      'start': {
+        'dateTime': event_details[1],
+        'timeZone': 'America/Los_Angeles',
+      },
+      'end': {
+        'dateTime': event_details[2],
+        'timeZone': 'America/Los_Angeles',
+      },
+      'recurrence': [
+        ('RRULE:FREQ=WEEKLY;UNTIL=').concat(event_details[3], ";BYDAY=", event_details[4])
+      ],
+      }
+    if (!(event_ids.includes(event_details[0]))) {
+      await calendar.events.insert({
+        'calendarId': calendar_id,
+        'resource': resource,
+        });
+      console.log("created new")
+      }
+    else {
+      await calendar.events.update({
+        'calendarId': calendar_id,
+        'eventId': event_details[0],
+        'resource': resource,
+        });
+      console.log("updated!")
+      }
     }
-  return;
+  return courseObj;
 
 }
 
@@ -158,6 +182,7 @@ function extract_eventDetails(courseObj: object) {
         }
       }
     let event = [];
+    event.push(courseObj.crn.concat("e", i)); //eventId
     event.push(first_week[start_day_index][1].concat("T", start_time, ":00-07:00")); //start
     event.push(first_week[start_day_index][1].concat("T", finish_time, ":00-07:00")); //end
     event.push((last_week[end_day_index][1].split("-").join("")).concat("T235900Z")) //until
@@ -166,4 +191,50 @@ function extract_eventDetails(courseObj: object) {
   }
   courseObj.eventDetails = eventDetails;
   return;
+}
+
+
+export async function remove_from_calendar(courseObj: object) {
+  const session = await getServerSession(authConfig);
+  if (!session) {
+    console.log("erm what");
+    return;
+  }
+  console.log("Session successful");
+
+  const auth = new google.auth.OAuth2({
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    });
+  auth.setCredentials({
+    access_token: session?.accessToken,
+    refresh_token: session?.refreshToken,
+    });
+  console.log("Connection successful");
+
+  const calendar = google.calendar({ auth, version: "v3" });
+  let calendar_id = "";
+  let calendarList_obj = await calendar.calendarList.list()
+  let calendar_items = calendarList_obj.data.items;
+  for (let i=0; i<calendar_items.length; i++) {
+    const cal_obj = calendar_items[i];
+    if (cal_obj?.summary == "Courses-To-Cal") {
+      console.log("found calendar");
+      calendar_id = cal_obj?.id;
+      }
+    }
+  if (calendar_id == "") {
+    return;
+  }
+  
+  for (let i=0; i<courseObj.eventDetails.length; i++) {
+    let event_id = courseObj.eventDetails[i][0];
+    calendar.events.delete({
+      'calendarId': calendar_id,
+      'eventId': event_id,
+      });
+    }
+  console.log("successfully deleted!")
+  return;
+
 }
