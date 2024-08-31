@@ -104,16 +104,8 @@ const first_week = [ // first weekdays returning to school in order M-F
   ["R", "2024-09-26"],
   ["F", "2024-09-27"],
 ];
-const last_week = [ // last weekdays of the quarter in order
-  ["M", "2024-12-02"],
-  ["T", "2024-12-03"],
-  ["W", "2024-12-04"],
-  ["R", "2024-12-05"],
-  ["F", "2024-12-06"],
-];
+const last_day = ["F", "2024-12-06"]; // last day of the quarter
 const instruction_start = 2;
-const instruction_end = 4;
-
 
 function extract_eventDetails(courseObj: object) {
   console.log(courseObj);
@@ -145,7 +137,7 @@ function extract_eventDetails(courseObj: object) {
     console.log(start_time);
     console.log(finish_time);
     
-    let [start_day_index, end_day_index] = [-1, -1];
+    let start_day_index = -1;
     let bydays = "";
     let get_relativeIndex = (index, start_index) => {
       let relative_index = index - start_index; // start_index becomes 0 point 
@@ -166,26 +158,18 @@ function extract_eventDetails(courseObj: object) {
       
       if (start_day_index == -1) {
         start_day_index = z;
-        end_day_index = z;
         continue;
         }
 
       if (get_relativeIndex(z, instruction_start) < get_relativeIndex(start_day_index, instruction_start)) {
         start_day_index = z
         }
-
-      if (end_day_index != instruction_end) {
-        if (instruction_end == z) { end_day_index = z }
-        else if (get_relativeIndex(z, instruction_end) > get_relativeIndex(end_day_index, instruction_end)) {
-          end_day_index = z
-          }
-        }
       }
     let event = [];
     event.push(courseObj.crn.concat("e", i)); //eventId
     event.push(first_week[start_day_index][1].concat("T", start_time, ":00-07:00")); //start
     event.push(first_week[start_day_index][1].concat("T", finish_time, ":00-07:00")); //end
-    event.push((last_week[end_day_index][1].split("-").join("")).concat("T235900Z")) //until
+    event.push((last_day[1].split("-").join("")).concat("T235900Z")) //until
     event.push(bydays); //bydays
     eventDetails.push(event);
   }

@@ -55,7 +55,7 @@ export default function SearchPage() {
             {is_search_inProgress && <div className={styles.loading}>
                 <p>Loading course results...</p>
                 <TfiTruck className="animate-bounce" /></div>}
-            <ResultsList results={search_results.current} />
+            <ResultsList results_arr={search_results.current} />
         </div>
     )
 }
