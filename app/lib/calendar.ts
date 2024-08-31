@@ -11,7 +11,7 @@ export async function add_to_calendar(courseObj: object) {
   const session = await getServerSession(authConfig);
   if (!session) {
     console.log("erm what");
-    return;
+    return {};
   }
   console.log("Session successful");
 
@@ -77,19 +77,29 @@ export async function add_to_calendar(courseObj: object) {
       ],
       }
     if (!(event_ids.includes(event_details[0]))) {
-      await calendar.events.insert({
-        'calendarId': calendar_id,
-        'resource': resource,
-        });
-      console.log("created new")
-      }
+      try {
+        await calendar.events.insert({
+          'calendarId': calendar_id,
+          'resource': resource,
+          });
+        console.log("created new");
+        }
+      catch { 
+        remove_from_calendar(courseObj);
+        return {}; }
+    }
     else {
-      await calendar.events.update({
-        'calendarId': calendar_id,
-        'eventId': event_details[0],
-        'resource': resource,
-        });
-      console.log("updated!")
+      try {
+        await calendar.events.update({
+          'calendarId': calendar_id,
+          'eventId': event_details[0],
+          'resource': resource,
+          });
+        console.log("updated!");
+        }
+      catch { 
+        remove_from_calendar(courseObj);
+        return {}; }
       }
     }
   return courseObj;
@@ -131,8 +141,12 @@ function extract_eventDetails(courseObj: object) {
       return (hours.concat(":", minutes)).padStart(5, "0");
       }
     
-    start_time = convert_24hrFormat(start_time, select_AmPm);
     finish_time = convert_24hrFormat(finish_time, select_AmPm);
+    let [start_hour, start_min] = start_time.split(":");
+    if (select_AmPm == "PM," && parseInt(start_hour)>=10) {
+      select_AmPm = "AM,"
+      }
+    start_time = convert_24hrFormat(start_time, select_AmPm);
     days = days.trim();
     console.log(start_time);
     console.log(finish_time);
@@ -213,10 +227,13 @@ export async function remove_from_calendar(courseObj: object) {
   
   for (let i=0; i<courseObj.eventDetails.length; i++) {
     let event_id = courseObj.eventDetails[i][0];
-    calendar.events.delete({
-      'calendarId': calendar_id,
-      'eventId': event_id,
-      });
+    try {
+      await calendar.events.delete({
+        'calendarId': calendar_id,
+        'eventId': event_id,
+        });
+      }
+    catch { continue; }//the possible error is that the event is already deleted
     }
   console.log("successfully deleted!")
   return;

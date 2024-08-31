@@ -32,7 +32,7 @@ function Box_Template({ children, header, courses_obj, click_handler, ...props }
                             <p className="w-full text-left text-sm">{courseObj.crn.concat(" ", courseObj.course)}</p>
                             <p className="w-full text-left text-sm">{courseObj.title}</p>
                         </div>
-                        <button onClick={()=>{onClick_handler(crn)}} disabled={( awaiting==crn )}>{children}</button>
+                        <button onClick={()=>{onClick_handler(crn)}} disabled={( awaiting.length>0 )} className={clsx((awaiting.length==0) && "hover:text-yellow-800", (awaiting==crn) && "text-indigo-500")}>{children}</button>
                     </div> )} )}
             </div>
         </div>
@@ -73,7 +73,7 @@ function AddedCourses() {
     return (
         <Box_Template courses_obj={added_courses} header="Recently Added To Calendar" header_bgColor="bg-purple-500"
             header_color="text-purple-300" click_handler={remove_course}>
-            <FaRegCalendarMinus />
+            <FaRegCalendarMinus title="Remove from Calendar" />
         </Box_Template>
     )
 }

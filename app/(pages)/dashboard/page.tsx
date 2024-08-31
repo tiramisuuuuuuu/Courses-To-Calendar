@@ -13,7 +13,7 @@ export default function Page() {
 
     return (
         <main className="flex flex-col items-center">
-            <p className="w-5/6 mt-5 mb-24">Dashboard</p>
+            <p className="w-5/6 mt-5 mb-24"></p>
             <AddedCoursesContext.Provider value={{ added_courses, setAddedCourses }}>
                 <SavedCoursesContext.Provider value={{ saved_courses, setSavedCourses }}>
                     <SearchPage />

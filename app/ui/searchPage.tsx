@@ -33,7 +33,7 @@ export default function SearchPage() {
         if (e.key=='Enter') {
             let input = e.currentTarget.value;
             input = input.trim();
-            if (input.length > 0 && input != curr_search) {
+            if (input.length > 0 && !(awaiting && input == curr_search)) {
                 setAwaiting(input);
                 updateCount.current = updateCount.current + 1;
                 }
@@ -44,6 +44,7 @@ export default function SearchPage() {
         setAwaiting("");
         setCurrSearch("");
         search_results.current = [];
+        updateCount.current = 0;
     }
 
     return (
@@ -55,6 +56,9 @@ export default function SearchPage() {
             {is_search_inProgress && <div className={styles.loading}>
                 <p>Loading course results...</p>
                 <TfiTruck className="animate-bounce" /></div>}
+            {(updateCount.current != 0 && search_results.current.length == 0 && !awaiting) && <div className="border border-solid border-yellow-500 bg-yellow-300">
+                <p>No results found. Please refine your search</p>
+                <p className="text-sm">Note: this may be an error, try this search again, if you believe so</p></div>}
             <ResultsList results_arr={search_results.current} />
         </div>
     )

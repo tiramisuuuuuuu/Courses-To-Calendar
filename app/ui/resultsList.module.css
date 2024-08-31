@@ -3,7 +3,10 @@
     width: 700px;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
     background-color: blue;
+    border: 2px, solid, black;
 }
 
 .result_data {
@@ -44,4 +47,12 @@
     font-size: small;
     margin-top: -4px;
     margin-bottom: -4px;
+}
+
+.bttn {
+    margin-left: 10px;
+}
+
+.icon {
+    font-size: 2rem;
 }

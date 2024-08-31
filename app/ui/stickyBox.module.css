@@ -5,7 +5,6 @@
 
     width: 300px;
     height: 400px;
-    background-color: burlywood;
     display: flex;
     flex-direction: column;
     row-gap: 10px;
@@ -39,4 +38,5 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    border-top: 2px, solid, black;
 }
