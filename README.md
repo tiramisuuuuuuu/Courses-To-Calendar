@@ -1,3 +1,6 @@
+Welcome to Courses To Calendar, a web app designed for UC Davis students to add their UCD course schedule to their Google Calendars within a few clicks. 
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -16,7 +19,24 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Connect your Google account
+![homepage image](image.png)
+
+## Search CRN or course-code
+![dashboard searching](image-1.png)
+
+## Add course to calendar directly or bookmark course
+![search results](image-2.png)
+
+## Manage your courses
+![course quick management box](image-3.png)
+
+## See results on your Google Calendar!
+![google calendar image](image-4.png)
+
+
+
+
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
